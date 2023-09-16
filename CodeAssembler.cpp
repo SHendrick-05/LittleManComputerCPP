@@ -24,11 +24,11 @@ static Instruction DecodeInstruction(wchar_t input[])
 	// Split the input into sections
 	std::vector<wchar_t*> spliced;
 	wchar_t* buffer;
-	wchar_t* token = wcstok(input, L" ", &buffer);
+	wchar_t* token = wcstok_s(input, L" ", &buffer);
 	while (token)
 	{
 		spliced.push_back(token);
-		token = wcstok(input, L" ", &buffer);
+		token = wcstok_s(input, L" ", &buffer);
 	}
 
 	// Get opcode
@@ -53,7 +53,7 @@ static Instruction DecodeInstruction(wchar_t input[])
 	// Get operand
 	else if (spliced.size() != 1)
 	{
-		result.operand = spliced[1];
+		result.operand = _wtoi(spliced[1]);
 	}
 
 	return result;

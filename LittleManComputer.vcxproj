@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CodeAssembler.h" />
+    <ClInclude Include="CodeHandler.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="Controls.h" />
   </ItemGroup>

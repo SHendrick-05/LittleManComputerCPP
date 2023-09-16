@@ -41,5 +41,8 @@
     <ClInclude Include="CodeAssembler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CodeHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
