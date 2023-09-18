@@ -29,6 +29,12 @@ BOOL InitInstance(HINSTANCE, int);
 ATOM RegisterWinClass(HINSTANCE);
 
 
+int ButtonClick(HWND hWnd, HWND hButton)
+{
+	UpdateOutput(L"TEST");
+}
+
+
 // Entry point for the application
 int WINAPI WinMain(
 	_In_ HINSTANCE hInstance,
@@ -177,6 +183,18 @@ LRESULT CALLBACK WndProc(
 
 	switch (message)
 	{
+		case WM_COMMAND:
+		{
+			int wmId = LOWORD(wParam);
+			int wmCode = HIWORD(wParam);
+			// Parse menu selections
+			switch (wmId)
+			{
+			
+			}
+		}
+		break;
+
 		case WM_PAINT:
 			PAINTSTRUCT ps;
 			hdc = BeginPaint(hWnd, &ps);
@@ -205,3 +223,9 @@ LRESULT CALLBACK WndProc(
 	return 0;
 }
 
+void UpdateOutput(const wchar_t* text)
+{
+	HWND outputHWND = textBoxes[2].hWnd;
+	SendMessage(outputHWND, EM_SETSEL, WPARAM(0), LPARAM(-1));
+	SendMessage(outputHWND, EM_REPLACESEL, WPARAM(TRUE), LPARAM(text));
+}
