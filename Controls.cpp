@@ -14,8 +14,8 @@ Button buttons[] = {
 // All the text boxes
 TextBox textBoxes[] = {
 	{10, 10, 250, 600, L"Type code here..."},
-	{270, 100, 250, 25, L""}, // State
-	{270, 150, 250, 460, L""} // Output
+	{270, 100, 250, 25, L"state"}, // State
+	{270, 150, 250, 460, L"out"} // Output
 };
 
 int labelCount = sizeof(labels)/sizeof(*labels);

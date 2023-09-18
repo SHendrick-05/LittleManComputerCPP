@@ -1,6 +1,5 @@
-#include <Windows.h>
-#include <tchar.h>
-#include <stdio.h>
+#include "framework.h"
+#include "resource.h"
 #include "Control.h"
 #include "Controls.h"
 
@@ -27,11 +26,14 @@ int test = 0;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL InitInstance(HINSTANCE, int);
 ATOM RegisterWinClass(HINSTANCE);
+INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
+void UpdateOutput(const wchar_t*);
 
 
 int ButtonClick(HWND hWnd, HWND hButton)
 {
 	UpdateOutput(L"TEST");
+	return 1;
 }
 
 
@@ -122,7 +124,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	for (int i = 0; i < buttonCount; i++)
 	{
 		Button btn = buttons[i];
-		btn.hWnd = CreateWindow(
+		HWND hWndd = CreateWindow(
 			L"BUTTON",
 			btn.txt,
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
@@ -134,13 +136,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 			NULL,
 			(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
 			NULL);
+		btn.hWnd = hWndd;
 	}
 
 	// TextBoxes
 	for (int i = 0; i < tBoxCount; i++)
 	{
 		TextBox tBox = textBoxes[i];
-		CreateWindow(
+		tBox.hWnd = CreateWindow(
 			L"EDIT",
 			tBox.txt,
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | WS_BORDER | ES_MULTILINE,
@@ -150,7 +153,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 			tBox.height,
 			hWnd,
 			NULL,
-			NULL,
+			(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
 			NULL);
 	}
 
@@ -190,7 +193,18 @@ LRESULT CALLBACK WndProc(
 			// Parse menu selections
 			switch (wmId)
 			{
-			
+			case IDM_ABOUT:
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+				break;
+			case IDM_EXIT:
+				DestroyWindow(hWnd);
+				break;
+			default:
+				if (wmCode == BN_CLICKED) {
+					if (ButtonClick(hWnd, (HWND)lParam))
+						break;
+				}
+				return DefWindowProc(hWnd, message, wParam, lParam);
 			}
 		}
 		break;
@@ -199,7 +213,6 @@ LRESULT CALLBACK WndProc(
 			PAINTSTRUCT ps;
 			hdc = BeginPaint(hWnd, &ps);
 			// Perform drawing code here
-			//swprintf_s(labels[0].txt, L"%d", test);
 
 			// Title
 			
@@ -223,9 +236,30 @@ LRESULT CALLBACK WndProc(
 	return 0;
 }
 
+
+// Message handler for About box.
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		{
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		}
+		break;
+	}
+	return (INT_PTR)FALSE;
+}
+
+
 void UpdateOutput(const wchar_t* text)
 {
 	HWND outputHWND = textBoxes[2].hWnd;
-	SendMessage(outputHWND, EM_SETSEL, WPARAM(0), LPARAM(-1));
-	SendMessage(outputHWND, EM_REPLACESEL, WPARAM(TRUE), LPARAM(text));
+	//SendMessage(outputHWND, EM_SETSEL, WPARAM(0), LPARAM(-1));
+	bool x = SendMessage(outputHWND, WM_SETTEXT, WPARAM(TRUE), LPARAM(TEXT("\r\ntest")));
 }
