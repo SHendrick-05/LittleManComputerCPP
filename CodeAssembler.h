@@ -1,5 +1,7 @@
 #pragma once
+#include <memory>
 #include <map>
+
 class Instruction
 {
 public:
@@ -9,4 +11,4 @@ public:
 };
 
 //static std::map<const wchar_t*, short> opcodes;
-static Instruction DecodeInstruction(const wchar_t*);
+static std::unique_ptr<Instruction> DecodeInstruction(wchar_t[]);

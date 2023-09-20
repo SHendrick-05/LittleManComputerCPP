@@ -9,7 +9,7 @@ static int ACC;
 static int IAR;
 static bool HLT;
 
-static void Start();
+static void StartExecution();
 static void RunInstruction();
 static int TakeInput();
 static int GetValue(short);

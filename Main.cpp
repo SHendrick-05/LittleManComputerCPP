@@ -3,6 +3,7 @@
 #include "Control.h"
 #include "Controls.h"
 #include "CodeAssembler.h"
+#include "CodeHandler.h"
 
 
 // Window class name
@@ -63,11 +64,14 @@ int ButtonClick(HWND hWnd, HWND hButton)
 
 	for (wchar_t* line : lines)
 	{
-		Instruction* decInstr = DecodeInstruction(line);
+		std::unique_ptr<Instruction> decInstr = DecodeInstruction(line);
 		if (decInstr != nullptr)
 		{
-
+			instrList.push_back(*decInstr);
 		}
+		// Assign the CodeHandler.h instruction list
+		InstrList = instrList;
+		StartExecution();
 	}
 
 	// Free the memory
@@ -316,4 +320,9 @@ void UpdateOutput(const wchar_t* text)
 	int index = GetWindowTextLength(hOut);
 	SendMessage(hOut, EM_SETSEL, WPARAM(index), LPARAM(index));
 	SendMessage(hOut, EM_REPLACESEL, WPARAM(0), LPARAM(text));
+}
+
+void ClearOutput()
+{
+	SendMessage(hOut, WM_SETTEXT, WPARAM(0), LPARAM(L""));
 }

@@ -1,8 +1,9 @@
 #include "CodeHandler.h"
+#include "Main.cpp"
 
-static void Start()
+static void StartExecution()
 {
-
+	ClearOutput();
 }
 
 static void RunInstruction()
@@ -34,6 +35,10 @@ static void RunInstruction()
 		break;
 		// TODO: INP
 	case 901:
+		int value = GetValue(instr.operand);
+		wchar_t buffer[sizeof(int) * 8 + 1];
+		swprintf(buffer, L"%d", value);
+		UpdateOutput(buffer);
 		break;
 		// TODO: OUT
 	case 902:
@@ -64,3 +69,4 @@ static int GetValue(short operand)
 {
 	return memory[operand];
 }
+

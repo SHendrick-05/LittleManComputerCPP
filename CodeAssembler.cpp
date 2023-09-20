@@ -1,7 +1,5 @@
 #include "CodeAssembler.h"
-#include <map>
-#include <wchar.h>
-#include <vector>
+#include "framework.h"
 
 static std::map<const wchar_t*, short> opcodes = {
 	{L"LDA", 5}, // Load address into ACC
@@ -17,10 +15,13 @@ static std::map<const wchar_t*, short> opcodes = {
 	// 10 = label
 };
 
-static Instruction* DecodeInstruction(wchar_t input[])
+static std::unique_ptr<Instruction> DecodeInstruction(wchar_t input[])
 {
-	Instruction result;
-	if (input == L"") return nullptr;
+	// Return a null pointer if an empty instruction was given.
+	if (input == L"") return std::unique_ptr<Instruction>(nullptr);
+
+	// Init the instruction object.
+	std::unique_ptr<Instruction> result(new Instruction());
 
 	// Split the input into sections
 	std::vector<wchar_t*> spliced;
@@ -43,25 +44,25 @@ static Instruction* DecodeInstruction(wchar_t input[])
 	//TODO :Convert uppercase
 	if (opcodes.count(opcode) != 0)
 	{
-		result.opcode = opcodes[opcode];
+		result->opcode = opcodes[opcode];
 	}
 	else
 	{
-		result.opcode = 10;
-		result.label = opcode;
+		result->opcode = 10;
+		result->label = opcode;
 	}
 
 	// Get appropriate labels if branch
-	if (result.opcode > 5 && result.opcode < 9)
+	if (result->opcode > 5 && result->opcode < 9)
 	{
-		result.label = spliced[1];
+		result->label = spliced[1];
 	}
 
 	// Get operand
 	else if (spliced.size() != 1)
 	{
-		result.operand = _wtoi(spliced[1]);
+		result->operand = _wtoi(spliced[1]);
 	}
-
-	return new Instruction(result);
+	
+	return result;
 }
