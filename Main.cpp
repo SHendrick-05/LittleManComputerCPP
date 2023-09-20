@@ -2,6 +2,7 @@
 #include "resource.h"
 #include "Control.h"
 #include "Controls.h"
+#include "CodeAssembler.h"
 
 
 // Window class name
@@ -19,10 +20,16 @@ const int windowWidth = 550;
 // The height of the window
 const int windowHeight = 660;
 
-int test = 0;
+
+// The handle to the output box.
+HWND hOut;
+
+// The handle to the state box.
+HWND hState;
 
 
 // Forward declarations for functions
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL InitInstance(HINSTANCE, int);
 ATOM RegisterWinClass(HINSTANCE);
@@ -32,7 +39,42 @@ void UpdateOutput(const wchar_t*);
 
 int ButtonClick(HWND hWnd, HWND hButton)
 {
-	UpdateOutput(L"TEST");
+	wchar_t* buff;
+	int len = GetWindowTextLength(hOut);
+	buff = (wchar_t*)malloc(len + 1); 
+	GetWindowText(hOut, buff, 1024);
+
+	// Get a vector of lines.
+	std::vector<wchar_t*> lines;
+	std::vector<Instruction> instrList;
+		
+	wchar_t* tok;
+	// Get first line 
+	tok = wcstok(buff, L"\r\n");
+
+	// Loop through the rest of the lines.
+	while (tok != NULL)
+	{
+		// Add the previous line to the list
+		lines.push_back(tok);
+		// Get the next line.
+		tok = wcstok(NULL, L"\r\n");
+	}
+
+	for (wchar_t* line : lines)
+	{
+		Instruction* decInstr = DecodeInstruction(line);
+		if (decInstr != nullptr)
+		{
+
+		}
+	}
+
+	// Free the memory
+	free(buff);
+
+
+
 	return 1;
 }
 
@@ -124,7 +166,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	for (int i = 0; i < buttonCount; i++)
 	{
 		Button btn = buttons[i];
-		HWND hWndd = CreateWindow(
+		CreateWindow(
 			L"BUTTON",
 			btn.txt,
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
@@ -136,14 +178,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 			NULL,
 			(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
 			NULL);
-		btn.hWnd = hWndd;
 	}
 
 	// TextBoxes
 	for (int i = 0; i < tBoxCount; i++)
 	{
 		TextBox tBox = textBoxes[i];
-		tBox.hWnd = CreateWindow(
+		HWND tHwnd = CreateWindow(
 			L"EDIT",
 			tBox.txt,
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | WS_BORDER | ES_MULTILINE,
@@ -155,6 +196,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 			NULL,
 			(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
 			NULL);
+		
+		
+		// Set HWND variables.
+		switch (i)
+		{
+		case 1:
+			hState = tHwnd;
+		case 2:
+			hOut = tHwnd;
+		}
 	}
 
 	// Shows the window and makes it visible to the user.
@@ -256,10 +307,13 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	return (INT_PTR)FALSE;
 }
 
-
+//
+// FUNCTION: UpdateOutput()
+//
+// PURPOSE: Appends text to the output Edit control.
 void UpdateOutput(const wchar_t* text)
 {
-	HWND outputHWND = textBoxes[2].hWnd;
-	//SendMessage(outputHWND, EM_SETSEL, WPARAM(0), LPARAM(-1));
-	bool x = SendMessage(outputHWND, WM_SETTEXT, WPARAM(TRUE), LPARAM(TEXT("\r\ntest")));
+	int index = GetWindowTextLength(hOut);
+	SendMessage(hOut, EM_SETSEL, WPARAM(index), LPARAM(index));
+	SendMessage(hOut, EM_REPLACESEL, WPARAM(0), LPARAM(text));
 }

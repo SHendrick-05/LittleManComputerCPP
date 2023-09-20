@@ -17,19 +17,26 @@ static std::map<const wchar_t*, short> opcodes = {
 	// 10 = label
 };
 
-static Instruction DecodeInstruction(wchar_t input[])
+static Instruction* DecodeInstruction(wchar_t input[])
 {
 	Instruction result;
+	if (input == L"") return nullptr;
 
 	// Split the input into sections
 	std::vector<wchar_t*> spliced;
+
 	wchar_t* buffer;
+	int len = wcslen(input);
+	buffer = (wchar_t*)malloc(len);
 	wchar_t* token = wcstok_s(input, L" ", &buffer);
+
 	while (token)
 	{
 		spliced.push_back(token);
 		token = wcstok_s(input, L" ", &buffer);
 	}
+
+	free(buffer);
 
 	// Get opcode
 	wchar_t* opcode = spliced[0];
@@ -56,5 +63,5 @@ static Instruction DecodeInstruction(wchar_t input[])
 		result.operand = _wtoi(spliced[1]);
 	}
 
-	return result;
+	return new Instruction(result);
 }

@@ -3,7 +3,6 @@
 
 static struct Control {
 	public:
-		HWND hWnd;
 		int x;
 		int y;
 		Control(int x, int y);
