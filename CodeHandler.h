@@ -3,7 +3,7 @@
 #include <vector>
 #include "CodeAssembler.h"
 static int memory[1000];
-static std::map<wchar_t*, int> labels;
+static std::map<wchar_t*, int> codeLabels;
 static std::vector<Instruction> InstrList;
 static int ACC;
 static int IAR;

@@ -40,7 +40,12 @@ void UpdateOutput(const wchar_t*);
 
 int ButtonClick(HWND hWnd, HWND hButton)
 {
+	// Clear the output
+	ClearOutput();
+
 	wchar_t* buff;
+
+	// Reserve memory and get the text.
 	int len = GetWindowTextLength(hOut);
 	buff = (wchar_t*)malloc(len + 1); 
 	GetWindowText(hOut, buff, 1024);
@@ -69,10 +74,12 @@ int ButtonClick(HWND hWnd, HWND hButton)
 		{
 			instrList.push_back(*decInstr);
 		}
-		// Assign the CodeHandler.h instruction list
-		InstrList = instrList;
-		StartExecution();
 	}
+
+	// Assign the CodeHandler.h instruction list
+	InstrList = instrList;
+	// Run the program.
+	StartExecution();
 
 	// Free the memory
 	free(buff);
@@ -322,7 +329,16 @@ void UpdateOutput(const wchar_t* text)
 	SendMessage(hOut, EM_REPLACESEL, WPARAM(0), LPARAM(text));
 }
 
+// 
+// FUNCTION: ClearOutput()
+// 
+// PURPOSE: Replaces the output edit control's text with an empty string.
 void ClearOutput()
 {
 	SendMessage(hOut, WM_SETTEXT, WPARAM(0), LPARAM(L""));
+}
+
+void UpdateState(const wchar_t* text)
+{
+	SendMessage(hState, WM_SETTEXT, WPARAM(0), LPARAM(text));
 }

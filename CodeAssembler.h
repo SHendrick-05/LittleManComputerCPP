@@ -7,7 +7,7 @@ class Instruction
 public:
 	short opcode;
 	short operand;
-	const wchar_t* label;
+	wchar_t* label;
 };
 
 //static std::map<const wchar_t*, short> opcodes;

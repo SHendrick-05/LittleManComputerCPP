@@ -4,6 +4,25 @@
 static void StartExecution()
 {
 	ClearOutput();
+
+	// Loop over all the labels.
+	for (auto& instr : InstrList)
+	{
+		// Disregard if it is an actual opcode.
+		if (instr.opcode != 10)
+			continue;
+		// If label not in list, add it.
+		auto it = std::find(InstrList.begin(), InstrList.end(), instr);
+		auto index = std::distance(InstrList.begin(), it);
+		codeLabels.emplace(instr.label, index);
+	}
+
+	// Run instructions
+	while (!HLT)
+	{
+		RunInstruction();
+	}
+	updatesta
 }
 
 static void RunInstruction()
