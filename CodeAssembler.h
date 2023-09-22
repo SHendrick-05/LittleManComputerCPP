@@ -11,4 +11,4 @@ public:
 };
 
 //static std::map<const wchar_t*, short> opcodes;
-static std::unique_ptr<Instruction> DecodeInstruction(wchar_t[]);
+std::unique_ptr<Instruction> DecodeInstruction(wchar_t[]);

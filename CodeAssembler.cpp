@@ -15,10 +15,13 @@ static std::map<const wchar_t*, short> opcodes = {
 	// 10 = label
 };
 
-static std::unique_ptr<Instruction> DecodeInstruction(wchar_t input[])
+std::unique_ptr<Instruction> DecodeInstruction(wchar_t input[])
 {
 	// Return a null pointer if an empty instruction was given.
-	if (input == L"") return std::unique_ptr<Instruction>(nullptr);
+	if (input == L"")
+	{
+		return std::unique_ptr<Instruction>(nullptr);
+	}
 
 	// Init the instruction object.
 	std::unique_ptr<Instruction> result(new Instruction());

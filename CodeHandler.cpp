@@ -1,7 +1,7 @@
 #include "CodeHandler.h"
-#include "Main.cpp"
+#include "Main.h"
 
-static void StartExecution()
+void StartExecution()
 {
 	ClearOutput();
 
@@ -12,9 +12,14 @@ static void StartExecution()
 		if (instr.opcode != 10)
 			continue;
 		// If label not in list, add it.
-		auto it = std::find(InstrList.begin(), InstrList.end(), instr);
-		auto index = std::distance(InstrList.begin(), it);
-		codeLabels.emplace(instr.label, index);
+		bool found = false;
+		for (int i = 0; i < InstrList.size(); i++)
+		{
+			if (InstrList[i].label == instr.label)
+			{
+				codeLabels.emplace(instr.label, i);
+			}
+		}
 	}
 
 	// Run instructions
@@ -43,7 +48,7 @@ static void RunInstruction()
 		return;
 	}
 	Instruction instr = InstrList[IAR];
-	
+	int value;
 	switch (instr.opcode)
 	{
 		// LDA
@@ -74,8 +79,9 @@ static void RunInstruction()
 		// TODO: OUT
 	case 902:
 	{
+		value = GetValue(instr.operand);
 		wchar_t buffer[sizeof(int) * 8 + 1];
-		swprintf(buffer, L"%d", GetValue(instr.operand));
+		_itow_s(value, buffer, 10);//(buffer, L"%d", value);
 		UpdateOutput(buffer);
 		break;
 	}

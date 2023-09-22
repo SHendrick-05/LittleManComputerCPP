@@ -4,6 +4,7 @@
 #include "Controls.h"
 #include "CodeAssembler.h"
 #include "CodeHandler.h"
+#include "Main.h"
 
 
 // Window class name
@@ -21,11 +22,7 @@ const int windowWidth = 550;
 // The height of the window
 const int windowHeight = 660;
 
-
-// The handle to the output box.
 HWND hOut;
-
-// The handle to the state box.
 HWND hState;
 
 
@@ -35,8 +32,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL InitInstance(HINSTANCE, int);
 ATOM RegisterWinClass(HINSTANCE);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
-void UpdateOutput(const wchar_t*);
-void ClearOutput();
+
 
 
 int ButtonClick(HWND hWnd, HWND hButton)
@@ -44,11 +40,11 @@ int ButtonClick(HWND hWnd, HWND hButton)
 	// Clear the output
 	ClearOutput();
 
-	wchar_t* buff;
 
 	// Reserve memory and get the text.
+
 	int len = GetWindowTextLength(hOut);
-	buff = (wchar_t*)malloc(len + 1); 
+	wchar_t* buff[len+1];
 	GetWindowText(hOut, buff, 1024);
 
 	// Get a vector of lines.
@@ -56,8 +52,9 @@ int ButtonClick(HWND hWnd, HWND hButton)
 	std::vector<Instruction> instrList;
 		
 	wchar_t* tok;
+	wchar_t* tokstate = (wchar_t*)malloc(sizeof(wchar_t*) * 10);
 	// Get first line 
-	tok = wcstok(buff, L"\r\n");
+	tok = wcstok_s(buff, L"\r\n", &tokstate);
 
 	// Loop through the rest of the lines.
 	while (tok != NULL)
@@ -65,7 +62,7 @@ int ButtonClick(HWND hWnd, HWND hButton)
 		// Add the previous line to the list
 		lines.push_back(tok);
 		// Get the next line.
-		tok = wcstok(NULL, L"\r\n");
+		tok = wcstok_s(NULL, L"\r\n", &tokstate);
 	}
 
 	for (wchar_t* line : lines)
