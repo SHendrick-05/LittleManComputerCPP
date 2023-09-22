@@ -36,6 +36,7 @@ BOOL InitInstance(HINSTANCE, int);
 ATOM RegisterWinClass(HINSTANCE);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
 void UpdateOutput(const wchar_t*);
+void ClearOutput();
 
 
 int ButtonClick(HWND hWnd, HWND hButton)
