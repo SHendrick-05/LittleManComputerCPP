@@ -1,5 +1,6 @@
 #include "CodeAssembler.h"
 #include "framework.h"
+#include <ranges>
 
 static std::map<const wchar_t*, short> opcodes = {
 	{L"LDA", 5}, // Load address into ACC
@@ -24,20 +25,21 @@ std::unique_ptr<Instruction> DecodeInstruction(wchar_t input[])
 	}
 
 	// Init the instruction object.
+
 	std::unique_ptr<Instruction> result(new Instruction());
 
 	// Split the input into sections
-	std::vector<wchar_t*> spliced;
+	wchar_t* spliced[3];
 
 	wchar_t* buffer;
 	int len = wcslen(input);
 	buffer = (wchar_t*)malloc(len);
 	wchar_t* token = wcstok_s(input, L" ", &buffer);
-
+	int i = 0;
 	while (token)
 	{
-		spliced.push_back(token);
-		token = wcstok_s(input, L" ", &buffer);
+		spliced[i++] = token;
+		token = wcstok_s(NULL, L" ", &buffer);
 	}
 
 	free(buffer);
@@ -62,7 +64,7 @@ std::unique_ptr<Instruction> DecodeInstruction(wchar_t input[])
 	}
 
 	// Get operand
-	else if (spliced.size() != 1)
+	else if (sizeof(spliced) / sizeof(spliced[0]) != 1)
 	{
 		result->operand = _wtoi(spliced[1]);
 	}

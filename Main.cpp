@@ -22,6 +22,7 @@ const int windowWidth = 550;
 // The height of the window
 const int windowHeight = 660;
 
+HWND hIn;
 HWND hOut;
 HWND hState;
 
@@ -42,9 +43,11 @@ int ButtonClick(HWND hWnd, HWND hButton)
 
 
 	// Reserve memory and get the text.
-	int len = GetWindowTextLength(hOut);
+	int len = GetWindowTextLength(hIn);
 	auto buff = (LPWSTR)VirtualAlloc((LPVOID)NULL, (DWORD)(len + 1), MEM_COMMIT, PAGE_READWRITE);
-	GetWindowText(hOut, buff, len + 1);
+	GetWindowText(hIn, buff, len + 1);
+
+	MessageBox(NULL, buff, L"Test", MB_ICONASTERISK | MB_YESNO);
 
 	// Get a vector of lines.
 	std::vector<wchar_t*> lines;
@@ -207,10 +210,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		// Set HWND variables.
 		switch (i)
 		{
+		case 0:
+			hIn = tHwnd;
+			break;
 		case 1:
 			hState = tHwnd;
+			break;
 		case 2:
 			hOut = tHwnd;
+			break;
 		}
 	}
 
