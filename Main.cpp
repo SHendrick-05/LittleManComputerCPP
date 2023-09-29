@@ -42,15 +42,13 @@ int ButtonClick(HWND hWnd, HWND hButton)
 
 
 	// Reserve memory and get the text.
-
 	int len = GetWindowTextLength(hOut);
-	wchar_t* buff[len+1];
-	GetWindowText(hOut, buff, 1024);
+	auto buff = (LPWSTR)VirtualAlloc((LPVOID)NULL, (DWORD)(len + 1), MEM_COMMIT, PAGE_READWRITE);
+	GetWindowText(hOut, buff, len + 1);
 
 	// Get a vector of lines.
 	std::vector<wchar_t*> lines;
 	std::vector<Instruction> instrList;
-		
 	wchar_t* tok;
 	wchar_t* tokstate = (wchar_t*)malloc(sizeof(wchar_t*) * 10);
 	// Get first line 
@@ -80,7 +78,6 @@ int ButtonClick(HWND hWnd, HWND hButton)
 	StartExecution();
 
 	// Free the memory
-	free(buff);
 
 
 
